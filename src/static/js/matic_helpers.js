@@ -173,10 +173,10 @@ async function getMaticStoredToken(App, tokenAddress, stakingAddress, type) {
       const crv = new ethers.Contract(tokenAddress, MATIC_CURVE_ABI, App.provider);
       if (tokenAddress.toLowerCase() == "0x88E11412BB21d137C217fd8b73982Dc0ED3665d7".toLowerCase()) {
         const minter = "0x3333333ACdEdBbC9Ad7bda0876e60714195681c5";
-        return await getCurveToken(App, crv, tokenAddress, stakingAddress, minter);
+        return await getCurveMaticToken(App, crv, tokenAddress, stakingAddress, minter);
       }
       const minter = await crv.minter();
-      return await getCurveToken(App, crv, tokenAddress, stakingAddress, minter);
+      return await getCurveMaticToken(App, crv, tokenAddress, stakingAddress, minter);
     case "maticSaddle":
       const saddle = new ethers.Contract(tokenAddress, MATIC_SADDLE_LP_TOKEN_ABI, App.provider);
       const swap = await saddle.swap();
@@ -531,7 +531,7 @@ async function loadMaticChefContract(App, tokens, prices, chef, chefAddress, che
   return { prices, totalUserStaked, totalStaked, averageApr }
 }
 
-const maticTokens = [ 
+const maticTokens = [
   { "id": "wmatic","symbol": "WMATIC","contract": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270" },
   { "id": "matic","symbol": "MATIC","contract": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270" },
   { "id": "tether","symbol": "USDT", "contract": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F" },
@@ -553,6 +553,7 @@ const maticTokens = [
   { "id": "nightbane", "symbol": "NIGHT", "contract": "0xEEf10C9Bf17c9d2C9619fd29447B231EA0Fde548" },
   { "id": "xdollar", "symbol": "XDO", "contract": "0x3dc7b06dd0b1f08ef9acbbd2564f8605b4868eea" },
   { "id": "iron-titanium-token", "symbol": "TITAN", "contract": "0xaaa5b9e6c589642f98a1cda99b9d024b8407285a" },
+  { "id": "iron-stablecoin", "symbol": "IRON", "contract": "0xd86b5923f3ad7b585ed81b448170ae026c65ae9a" },
   { "id": "bzx-protocol", "symbol": "BZRX", "contract": "0x97dfbEF4eD5a7f63781472Dbc69Ab8e5d7357cB9" },
   { "id": "havven", "symbol": "SNX", "contract": "0x50B728D8D964fd00C2d0AAD81718b71311feF68a" },
   { "id": "curve-dao-token", "symbol": "CRV", "contract": "0x172370d5Cd63279eFa6d502DAB29171933a610AF" },
@@ -575,8 +576,20 @@ const maticTokens = [
   { "id": "polywolf", "symbol": "MOON", "contract": "0xc56d17dd519e5eb43a19c9759b5d5372115220bd" },
   { "id": "candy", "symbol": "CANDY", "contract": "0x710dF6FF5c680b0AcEc713a3D034C2B79D08741E" },
   { "id": "galaxy-oberon", "symbol": "OBERON", "contract": "0xc979E70611D997Aa109528c6A9aa73D82Eaa2881"},
-  { "id": "xdollar-stablecoin", "sybmol": "xUSD", "contract": "0x3a3e7650f8b9f667da98f236010fbf44ee4b2975"}
+  { "id": "xdollar-stablecoin", "sybmol": "xUSD", "contract": "0x3a3e7650f8b9f667da98f236010fbf44ee4b2975"},
+  { "id": "aavegochi", "symbol": "GHST", "contract": "0x385Eeac5cB85A38A9a07A70c73e0a3271CfB54A7"},
+  { "id": "kommunitas", "symbol": "KOM", "contract": "0xC004e2318722EA2b15499D6375905d75Ee5390B8"},
+  { "id": "polycat", "symbol": "FISH", "contract":"0x3a3Df212b7AA91Aa0402B9035b098891d276572B"},
+  { "id": "polly-defi-nest", "symbol": "NDEFI", "contract":"0xd3f07EA86DDf7BAebEfd49731D7Bbd207FedC53B"},
+  { "id": "gamee", "symbol": "GMEE", "contract":"0xcf32822ff397Ef82425153a9dcb726E5fF61DCA7"},
+  { "id": "polkabridge", "symbol": "PBR", "contract":"0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0"},
+  { "id": "phoenix-token", "symbol": "PHX", "contract":"0x9C6BfEdc14b5C23E3900889436Edca7805170f01"},
+  { "id": "zerogoki", "symbol": "REI", "contract":"0xB9f9e37c2CdbaFF928C3Da730b02F06fE09aE70E"},
+  { "id": "honor-token", "symbol": "HONOR", "contract":"0xb82a20b4522680951f11c94c54b8800c1c237693"},
+  { "id": "mantra-dao", "symbol": "OM", "contract":"0xC3Ec80343D2bae2F8E680FDADDe7C17E71E114ea"},
+  { "id": "synapse-2", "symbol": "SYN", "contract":"0xf8f9efc0db77d8881500bb06ff5d6abc3070e695"}
 ]
+
 
 async function getMaticPrices() {
   const idPrices = await lookUpPrices(maticTokens.map(x => x.id));
